@@ -99,7 +99,7 @@ const headers = [
         :items-per-page="10"
       >
         <template #item.dataAquisicao="{ item }">
-          {{ new Date(item.dataAquisicao).toLocaleDateString('pt-BR') }}
+          {{ new Date(item.dataAquisicao + 'T00:00:00').toLocaleDateString('pt-BR') }}
         </template>
 
         <template #item.lido="{ item }">
