@@ -98,7 +98,7 @@ const cancelar = () => (visible.value = false)
       <v-divider />
 
       <v-form ref="formRef" @submit.prevent="salvar">
-        <v-card-text style="max-height: 68vh">
+        <v-card-text style="max-height: calc(100vh - 220px); overflow-y: auto">
           <v-row>
             <v-col cols="12" md="8">
               <v-text-field v-model="form.titulo" label="Título *" variant="outlined"
