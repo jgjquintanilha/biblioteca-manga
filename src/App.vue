@@ -3,7 +3,14 @@ import { onMounted, ref } from 'vue'
 import { useMangas } from '@/composables/useMangas'
 
 const { carregar } = useMangas()
+import { useRouter } from 'vue-router'
 const drawer = ref(true)
+const router = useRouter()
+const navegando = ref(false)
+
+router.beforeEach(() => { navegando.value = true })
+router.afterEach(() => { navegando.value = false })
+router.onError(() => { navegando.value = false })
 
 const menu = [
   { title: 'Início', icon: 'mdi-home', to: '/' },
@@ -22,7 +29,7 @@ onMounted(() => carregar(false))
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar color="primary" elevation="2">
+    <v-app-bar color="primary" elevation="2" :loading="navegando">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title style="cursor: pointer; user-select;none" @click="$router.push('/')">
         <v-icon icon="mdi-book-open-page-variant" class="mr-2" />
