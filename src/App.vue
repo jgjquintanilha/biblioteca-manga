@@ -18,16 +18,13 @@ onMounted(() => carregar(false))
   <v-app>
     <v-navigation-drawer v-model="drawer" :permanent="$vuetify.display.mdAndUp" temporary>
       <v-list nav>
-        <v-list-item
-          v-for="m in menu" :key="m.to"
-          :to="m.to" :prepend-icon="m.icon" :title="m.title" exact
-        />
+        <v-list-item v-for="m in menu" :key="m.to" :to="m.to" :prepend-icon="m.icon" :title="m.title" exact />
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar color="primary" elevation="2">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-app-bar-title>
+      <v-app-bar-title style="cursor: pointer; user-select;none" @click="$router.push('/')">
         <v-icon icon="mdi-book-open-page-variant" class="mr-2" />
         Biblioteca de Mangás
       </v-app-bar-title>
