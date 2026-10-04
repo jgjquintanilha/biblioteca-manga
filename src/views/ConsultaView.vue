@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useMangas } from '@/composables/useMangas'
-import type { GeneroManga, StatusManga } from '@/types/manga'
+import type { GeneroManga, Manga, StatusManga } from '@/types/manga'
 
 const { mangas, carregar } = useMangas()
 onMounted(() => carregar(false))
@@ -63,6 +63,11 @@ const resultado = computed(() => {
     )
   })
 })
+
+const detalhe = ref<Manga | null>(null)
+const abrirDetalhe = (_: Event, { item }: { item: Manga }) => {
+  detalhe.value = item
+}
 
 const limparFiltros = () => {
   filtros.busca = ''
@@ -153,9 +158,10 @@ const limparFiltros = () => {
     </v-empty-state>
 
     <!-- Resultado -->
-    <v-data-table
+        <v-data-table
       v-else
       :headers="[
+        { title: 'Capa', key: 'capa', sortable: false },
         { title: 'Título', key: 'titulo' },
         { title: 'Autor', key: 'autor' },
         { title: 'Editora', key: 'editora' },
@@ -165,23 +171,71 @@ const limparFiltros = () => {
         { title: 'Vol.', key: 'volumes' },
         { title: 'Nota', key: 'nota' },
         { title: 'Aquisição', key: 'dataAquisicao' },
+        { title: 'CEP', key: 'cepCompra' },
         { title: 'Local', key: 'localCompra' },
+        { title: 'Sinopse', key: 'sinopse' },
         { title: 'Lido', key: 'lido' }
       ]"
       :items="resultado"
       item-value="id"
       density="comfortable"
       :items-per-page="10"
+            hover
+      @click:row="abrirDetalhe"
     >
+      <template #item.capa="{ item }">
+        <v-img :src="item.capa" width="40" height="56" cover class="rounded my-1" />
+      </template>
       <template #item.dataAquisicao="{ item }">
-        {{ new Date(item.dataAquisicao).toLocaleDateString('pt-BR') }}
+        {{ new Date(item.dataAquisicao + 'T00:00:00').toLocaleDateString('pt-BR') }}
       </template>
       <template #item.nota="{ item }">{{ Number(item.nota).toFixed(1) }}</template>
+      <template #item.sinopse="{ item }">
+        <div class="text-truncate" style="max-width: 220px" :title="item.sinopse">
+          {{ item.sinopse }}
+        </div>
+      </template>
       <template #item.lido="{ item }">
         <v-chip :color="item.lido ? 'success' : 'grey'" size="small" variant="tonal">
           {{ item.lido ? 'Sim' : 'Não' }}
         </v-chip>
       </template>
     </v-data-table>
+        <v-dialog :model-value="!!detalhe" max-width="640" @update:model-value="detalhe = null">
+      <v-card v-if="detalhe" rounded="lg">
+        <v-card-title class="d-flex align-center">
+          <span class="text-wrap">{{ detalhe.titulo }}</span>
+          <v-spacer />
+          <v-btn icon="mdi-close" variant="text" @click="detalhe = null" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text style="max-height: 70vh; overflow-y: auto">
+          <v-row>
+            <v-col cols="12" sm="4">
+              <v-img :src="detalhe.capa" aspect-ratio="0.71" cover class="rounded" />
+            </v-col>
+            <v-col cols="12" sm="8">
+              <div><strong>Autor:</strong> {{ detalhe.autor }}</div>
+              <div><strong>Editora:</strong> {{ detalhe.editora }}</div>
+              <div><strong>Gênero:</strong> {{ detalhe.genero }}</div>
+              <div><strong>Status:</strong> {{ detalhe.status }}</div>
+              <div><strong>Ano:</strong> {{ detalhe.ano }} · <strong>Vol.:</strong> {{ detalhe.volumes }}</div>
+              <div><strong>Nota:</strong> {{ Number(detalhe.nota).toFixed(1) }}</div>
+              <div>
+                <strong>Aquisição:</strong>
+                {{ new Date(detalhe.dataAquisicao + 'T00:00:00').toLocaleDateString('pt-BR') }}
+              </div>
+              <div><strong>CEP:</strong> {{ detalhe.cepCompra }}</div>
+              <div><strong>Local:</strong> {{ detalhe.localCompra }}</div>
+              <div><strong>Lido:</strong> {{ detalhe.lido ? 'Sim' : 'Não' }}</div>
+            </v-col>
+            <v-col cols="12">
+              <strong>Sinopse</strong>
+              <p class="mt-1">{{ detalhe.sinopse }}</p>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
