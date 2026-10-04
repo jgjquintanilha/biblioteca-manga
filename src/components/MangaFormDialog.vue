@@ -13,8 +13,8 @@ const emit = defineEmits<{
   (e: 'submit', payload: MangaPayload, id: string | null): void
 }>()
 
-const generos: GeneroManga[] = ['Ação','Aventura','Fantasia','Romance','Terror','Sobrenatural','Drama','Comédia']
-const statuses: StatusManga[] = ['Em andamento','Completo','Hiato','Cancelado']
+const generos: GeneroManga[] = ['Ação', 'Aventura', 'Fantasia', 'Romance', 'Terror', 'Sobrenatural', 'Drama', 'Comédia']
+const statuses: StatusManga[] = ['Em andamento', 'Completo', 'Hiato', 'Cancelado']
 
 const formRef = ref()
 const loadingCep = ref(false)
@@ -101,22 +101,24 @@ const cancelar = () => (visible.value = false)
         <v-card-text style="max-height: calc(100vh - 220px); overflow-y: auto">
           <v-row>
             <v-col cols="12" md="8">
-              <v-text-field v-model="form.titulo" label="Título *" variant="outlined"
-                :rules="[regras.required]" prepend-inner-icon="mdi-book" />
+              <v-text-field v-model="form.titulo" label="Título *" variant="outlined" :rules="[regras.required]"
+                prepend-inner-icon="mdi-book" />
             </v-col>
             <v-col cols="12" md="4">
-              <v-text-field v-model="form.autor" label="Autor *" variant="outlined"
-                :rules="[regras.required]" prepend-inner-icon="mdi-account-edit" />
+              <v-text-field v-model="form.autor" label="Autor *" variant="outlined" :rules="[regras.required]"
+                prepend-inner-icon="mdi-account-edit" />
             </v-col>
 
             <v-col cols="12" md="4">
               <v-text-field v-model="form.editora" label="Editora *" variant="outlined" :rules="[regras.required]" />
             </v-col>
             <v-col cols="12" md="4">
-              <v-select v-model="form.genero" :items="generos" label="Gênero *" variant="outlined" :rules="[regras.required]" />
+              <v-select v-model="form.genero" :items="generos" label="Gênero *" variant="outlined"
+                :rules="[regras.required]" />
             </v-col>
             <v-col cols="12" md="4">
-              <v-select v-model="form.status" :items="statuses" label="Status *" variant="outlined" :rules="[regras.required]" />
+              <v-select v-model="form.status" :items="statuses" label="Status *" variant="outlined"
+                :rules="[regras.required]" />
             </v-col>
 
             <v-col cols="12" md="3">
@@ -138,19 +140,15 @@ const cancelar = () => (visible.value = false)
 
             <v-col cols="12" md="4">
               <v-text-field v-model="form.cepCompra" label="CEP da compra *" variant="outlined"
-                :rules="[regras.required, regras.cep]"
-                :loading="loadingCep"
-                :error-messages="cepErro ?? []"
-                prepend-inner-icon="mdi-map-marker"
-                append-inner-icon="mdi-magnify"
-                @click:append-inner="consultarCep"
+                :rules="[regras.required, regras.cep]" :loading="loadingCep" :error-messages="cepErro ?? []"
+                prepend-inner-icon="mdi-map-marker" append-inner-icon="mdi-magnify" @click:append-inner="consultarCep"
                 @blur="form.cepCompra && consultarCep()" />
             </v-col>
             <v-col cols="12" md="8">
-              <v-text-field v-model="form.localCompra" label="Local de compra (auto-preenchido)"
+              <v-skeleton-loader v-if="loadingCep" type="text" class="mt-2" />
+              <v-text-field v-else v-model="form.localCompra" label="Local de compra (auto-preenchido)"
                 variant="outlined" readonly prepend-inner-icon="mdi-store" />
             </v-col>
-
             <v-col cols="12" md="4" class="d-flex align-center">
               <v-switch v-model="form.lido" color="primary" label="Já li esta obra?" hide-details inset />
             </v-col>
@@ -161,8 +159,8 @@ const cancelar = () => (visible.value = false)
             </v-col>
 
             <v-col cols="12">
-              <v-textarea v-model="form.sinopse" label="Sinopse *" variant="outlined"
-                rows="3" auto-grow :rules="[regras.required]" />
+              <v-textarea v-model="form.sinopse" label="Sinopse *" variant="outlined" rows="3" auto-grow
+                :rules="[regras.required]" />
             </v-col>
           </v-row>
         </v-card-text>
